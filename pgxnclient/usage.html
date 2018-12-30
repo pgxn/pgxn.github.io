@@ -1,0 +1,491 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Program usage &#8212; PGXN Client 1.3.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Extending PGXN client" href="ext.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ext.html" title="Extending PGXN client"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PGXN Client 1.3.dev0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="program-usage">
+<h1>Program usage<a class="headerlink" href="#program-usage" title="Permalink to this headline">¶</a></h1>
+<p>The program entry point is the script called <strong class="program">pgxn</strong>.</p>
+<p>Usage:</p>
+<pre class="pgxn literal-block">
+pgxn [--help] [--version] <em>COMMAND</em>
+    [--mirror <em>URL</em>] [--verbose] [--yes] ...
+</pre>
+<p>The script offers several commands, whose list can be obtained using <code class="docutils literal notranslate"><span class="pre">pgxn</span>
+<span class="pre">--help</span></code>. The options available for each subcommand can be obtained using
+<code class="samp docutils literal notranslate"><span class="pre">pgxn</span> <em><span class="pre">COMMAND</span></em> <span class="pre">--help</span></code>.</p>
+<p>The main commands you may be interested in are <a class="reference internal" href="#install">install</a> (to download, build
+and install an extension distribution into the system) and <a class="reference internal" href="#load">load</a> (to load an
+installed extension into a database). Commands to perform reverse operations
+are <a class="reference internal" href="#uninstall">uninstall</a> and <a class="reference internal" href="#unload">unload</a>. Use <a class="reference internal" href="#download">download</a> to get a package from a mirror
+without installing it.</p>
+<p>There are also informative commands: <a class="reference external" href="#pgxn-search">search</a> is used to
+search the network, <a class="reference internal" href="#info">info</a> to get information about a distribution.
+The <a class="reference internal" href="#mirror">mirror</a> command can be used to get a list of mirrors.</p>
+<p>A few options are available to all the commands:</p>
+<dl class="docutils">
+<dt><code class="samp docutils literal notranslate"><span class="pre">--mirror</span> <em><span class="pre">URL</span></em></code></dt>
+<dd>Select a mirror to interact with. If not specified the default is
+<code class="docutils literal notranslate"><span class="pre">https://api.pgxn.org/</span></code>.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--verbose</span></code></dt>
+<dd>Print more information during the process.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--yes</span></code></dt>
+<dd>Assume affirmative answer to all questions. Useful for unattended scripts.</dd>
+</dl>
+<div class="section" id="package-specification">
+<h2>Package specification<a class="headerlink" href="#package-specification" title="Permalink to this headline">¶</a></h2>
+<p>Many commands such as <a class="reference internal" href="#install">install</a> require a <em>package specification</em> to operate.
+In its simple form the specification is just the name of a distribution:
+<code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">install</span> <span class="pre">foo</span></code> means “install the most recent stable release of the
+<code class="docutils literal notranslate"><span class="pre">foo</span></code> distribution”. If a distribution with given name is not found, many
+commands will look for an <em>extension</em> with the given name, and will work on
+it.</p>
+<p>The specification allows specifying an operator and a version number, so that
+<code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">install</span> <span class="pre">'foo&lt;2.0'</span></code> will install the most recent stable release of the
+distribution before the release 2.0. The version numbers are ordered according to
+the <a class="reference external" href="https://semver.org/">Semantic Versioning specification</a>. Supported
+operators are <code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">==</span></code> (alias for <code class="docutils literal notranslate"><span class="pre">=</span></code>), <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code>.
+Note that you probably need to quote the string as in the example to avoid
+invoking shell command redirection.</p>
+<p>Whenever a command takes a specification in input, it also accepts options
+<code class="docutils literal notranslate"><span class="pre">--stable</span></code>, <code class="docutils literal notranslate"><span class="pre">--testing</span></code> and <code class="docutils literal notranslate"><span class="pre">--unstable</span></code> to specify the minimum release
+status accepted. The default is “stable”.</p>
+<p>A few commands also allow specifying a local archive or local directory
+containing a distribution: in this case the specification should contain at
+least a path separator to disambiguate it from a distribution name (for
+instance <code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">install</span> <span class="pre">./foo.zip</span></code>) or it should be specified as an URL with
+<code class="docutils literal notranslate"><span class="pre">file://</span></code> schema.</p>
+<p>A few commands also allow specifying a remote package with a URL. Currently
+the schemas <code class="docutils literal notranslate"><span class="pre">http://</span></code> and <code class="docutils literal notranslate"><span class="pre">https://</span></code> are supported.</p>
+<p>Currently the client supports <code class="docutils literal notranslate"><span class="pre">.zip</span></code> and <code class="docutils literal notranslate"><span class="pre">.tar</span></code> archives (eventually with
+<em>gzip</em> and <em>bz2</em> compression).</p>
+</div>
+<div class="section" id="pgxn-install">
+<span id="install"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">install</span></code><a class="headerlink" href="#pgxn-install" title="Permalink to this headline">¶</a></h2>
+<p>Download, build, and install a distribution on the local system.</p>
+<p>Usage:</p>
+<pre class="pgxn-install literal-block">
+pgxn install [--help] [--stable | --testing | --unstable]
+             [--pg_config <em>PROG</em>] [--make <em>PROG</em>]
+             [--sudo [<em>PROG</em>] | --nosudo]
+             <em>SPEC</em>
+</pre>
+<p>The program takes a <a class="reference internal" href="#package-specification">package specification</a> identifying the distribution to
+work with.  The download phase is skipped if the distribution specification
+refers to a local directory or package.  The package may be specified with an
+URL.</p>
+<p>Note that the built extension is not loaded in any database: use the command
+<a class="reference internal" href="#load">load</a> for this purpose.</p>
+<p>The command will run the <code class="docutils literal notranslate"><span class="pre">configure</span></code> script if available in the package,
+then will perform <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">all</span></code> and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>. It is assumed that the
+<code class="docutils literal notranslate"><span class="pre">Makefile</span></code> provided by the distribution uses <a class="reference external" href="https://www.postgresql.org/docs/current/extend-pgxs.html">PGXS</a> to build the extension,
+but this is not enforced: you may provide any Makefile as long as the expected
+commands are implemented.</p>
+<p>If there are many PostgreSQL installations on the system, the extension will
+be built and installed against the instance whose <strong class="program">pg_config</strong> is
+first found on the <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code>. A different instance can be specified using
+the option <code class="samp docutils literal notranslate"><span class="pre">--pg_config</span> <em><span class="pre">PATH</span></em></code>.</p>
+<p>The <a class="reference external" href="https://www.postgresql.org/docs/current/extend-pgxs.html">PGXS</a> build system relies on a presence of <a class="reference external" href="https://www.gnu.org/software/make/">GNU Make</a>: in many systems
+it is installed as <strong class="program">gmake</strong> or <strong class="program">make</strong> executable. The program
+will use the first of them on the path. You can specify an alternative program
+using <code class="docutils literal notranslate"><span class="pre">--make</span></code> option.</p>
+<p>If the extension is being installed into a system PostgreSQL installation, the
+install phase will likely require root privileges to be performed.  In this
+case either run the command under <strong class="program">sudo</strong> or specify the <code class="docutils literal notranslate"><span class="pre">--sudo</span></code>
+option: in the latter case <strong class="program">sudo</strong> will only be invoked during the
+“install” phase.  An optional program <code class="samp docutils literal notranslate"><em><span class="pre">PROG</span></em></code> to elevate the user
+privileges can be specified as <code class="docutils literal notranslate"><span class="pre">--sudo</span></code> option; if none is specified,
+<strong class="program">sudo</strong> will be used.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">--sudo</span></code> is the last option and no <code class="samp docutils literal notranslate"><em><span class="pre">PROG</span></em></code> is specified, a
+<code class="docutils literal notranslate"><span class="pre">--</span></code> separator may be required to disambiguate the <code class="samp docutils literal notranslate"><em><span class="pre">SPEC</span></em></code>:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pgxn</span> <span class="n">install</span> <span class="o">--</span><span class="n">sudo</span> <span class="o">--</span> <span class="n">foobar</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pgxn-check">
+<span id="check"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">check</span></code><a class="headerlink" href="#pgxn-check" title="Permalink to this headline">¶</a></h2>
+<p>Run a distribution’s unit test.</p>
+<p>Usage:</p>
+<pre class="pgxn-check literal-block">
+pgxn check [--help] [--stable | --testing | --unstable]
+           [--pg_config <em>PROG</em>] [--make <em>PROG</em>]
+           [-d <em>DBNAME</em>] [-h <em>HOST</em>] [-p <em>PORT</em>] [-U <em>NAME</em>]
+           <em>SPEC</em>
+</pre>
+<p>The command takes a <a class="reference internal" href="#package-specification">package specification</a> identifying the distribution to
+work with, which can also be a local file or directory or an URL. The
+distribution is unpacked if required and the <code class="docutils literal notranslate"><span class="pre">installcheck</span></code> make target is
+run.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The command doesn’t run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">all</span></code> before <code class="docutils literal notranslate"><span class="pre">installcheck</span></code>: if any file
+required for testing is to be built, it should be listed as
+<code class="docutils literal notranslate"><span class="pre">installcheck</span></code> prerequisite in the <code class="docutils literal notranslate"><span class="pre">Makefile</span></code>, for instance:</p>
+<div class="last highlight-make notranslate"><div class="highlight"><pre><span></span><span class="nf">myext.sql</span><span class="o">:</span> <span class="n">myext</span>.<span class="n">sql</span>.<span class="n">in</span>
+    some_command
+
+<span class="nf">installcheck</span><span class="o">:</span> <span class="n">myext</span>.<span class="n">sql</span>
+</pre></div>
+</div>
+</div>
+<p>The script exits with non-zero value in case of test failed. In this case,
+if files <code class="docutils literal notranslate"><span class="pre">regression.diff</span></code> and <code class="docutils literal notranslate"><span class="pre">regression.out</span></code> are produced (as
+<strong class="program">pg_regress</strong> does), these files are copied to the local directory
+where the script is run.</p>
+<p>The database connection options are similar to the ones in <a class="reference internal" href="#load">load</a>, with the
+difference that the variable <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PGDATABASE</span></code> doesn’t influence the
+database name.</p>
+<p>See the <a class="reference internal" href="#install">install</a> command for details about the command arguments.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<blockquote class="last">
+<div>At the time of writing, <strong class="program">pg_regress</strong> on Debian and derivatives is
+affected by <a class="reference external" href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=554166">bug #554166</a> which makes <em>HOST</em> selection impossible.</div></blockquote>
+</div>
+</div>
+<div class="section" id="pgxn-uninstall">
+<span id="uninstall"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">uninstall</span></code><a class="headerlink" href="#pgxn-uninstall" title="Permalink to this headline">¶</a></h2>
+<p>Remove a distribution from the system.</p>
+<p>Usage:</p>
+<pre class="pgxn-uninstall literal-block">
+pgxn uninstall [--help] [--stable | --testing | --unstable]
+               [--pg_config <em>PROG</em>] [--make <em>PROG</em>]
+               [--sudo [<em>PROG</em>] | --nosudo]
+               <em>SPEC</em>
+</pre>
+<p>The command does the opposite of the <a class="reference internal" href="#install">install</a> command, removing a
+distribution’s files from the system. It doesn’t issue any command to the
+databases where the distribution’s extensions may have been loaded: you should
+first drop the extension (the <a class="reference internal" href="#unload">unload</a> command can do this).</p>
+<p>The distribution should match what installed via the <a class="reference internal" href="#install">install</a> command.</p>
+<p>See the <a class="reference internal" href="#install">install</a> command for details about the command arguments.</p>
+</div>
+<div class="section" id="pgxn-load">
+<span id="load"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">load</span></code><a class="headerlink" href="#pgxn-load" title="Permalink to this headline">¶</a></h2>
+<p>Load the extensions included in a distribution into a database. The
+distribution must be already installed in the system, e.g. via the <a class="reference internal" href="#install">install</a>
+command.</p>
+<p>Usage:</p>
+<pre class="pgxn-load literal-block">
+pgxn load [--help] [--stable | --testing | --unstable] [-d <em>DBNAME</em>]
+          [-h <em>HOST</em>] [-p <em>PORT</em>] [-U <em>NAME</em>] [--pg_config <em>PATH</em>]
+          [--schema <em>SCHEMA</em>]
+          <em>SPEC</em> [<em>EXT</em> [<em>EXT</em> ...]]
+</pre>
+<p>The distribution is specified according to the <a class="reference internal" href="#package-specification">package specification</a> and
+can refer to a local directory or file or to an URL.  No consistency check is
+performed between the packages specified in the <code class="docutils literal notranslate"><span class="pre">install</span></code> and <code class="docutils literal notranslate"><span class="pre">load</span></code>
+command: the specifications should refer to compatible packages. The specified
+distribution is only used to read the metadata: only installed files are
+actually used to issue database commands.</p>
+<p>The database to install into can be specified using options
+<code class="docutils literal notranslate"><span class="pre">-d</span></code>/<code class="docutils literal notranslate"><span class="pre">--dbname</span></code>, <code class="docutils literal notranslate"><span class="pre">-h</span></code>/<code class="docutils literal notranslate"><span class="pre">--host</span></code>, <code class="docutils literal notranslate"><span class="pre">-p</span></code>/<code class="docutils literal notranslate"><span class="pre">--port</span></code>,
+<code class="docutils literal notranslate"><span class="pre">-U</span></code>/<code class="docutils literal notranslate"><span class="pre">--username</span></code>. The default values for these parameters are the regular
+system ones and can be also set using environment variables
+<span class="target" id="index-2"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PGDATABASE</span></code>, <span class="target" id="index-3"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PGHOST</span></code>, <span class="target" id="index-4"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PGPORT</span></code>, <span class="target" id="index-5"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PGUSER</span></code>.</p>
+<p>The command supports also a <code class="docutils literal notranslate"><span class="pre">--pg_config</span></code> option that can be used to specify
+an alternative <strong class="program">pg_config</strong> to use to look for installation scripts:
+you may need to specify the parameter if there are many PostgreSQL
+installations on the system, and should be consistent to the one specified
+in the <code class="docutils literal notranslate"><span class="pre">install</span></code> command.</p>
+<p>If the specified database version is at least PostgreSQL 9.1, and if the
+extension specifies a <code class="docutils literal notranslate"><span class="pre">.control</span></code> file, it will be loaded using the <a class="reference external" href="https://www.postgresql.org/docs/current/sql-createextension.html">CREATE
+EXTENSION</a> command, otherwise it will be loaded as a loose set of objects.
+For more information see the <a class="reference external" href="https://www.postgresql.org/docs/current/extend-extensions.html">extensions documentation</a>.</p>
+<p>The command is based on the <a class="reference external" href="https://pgxn.org/spec/#provides">‘provides’ section</a> of the distribution’s
+<code class="docutils literal notranslate"><span class="pre">META.json</span></code>: if a SQL file is specified, that file will be used to load the
+extension. Note that loading is only attempted if the file extension is
+<code class="docutils literal notranslate"><span class="pre">.sql</span></code>: if it’s not, we assume that the extension is not really a PostgreSQL
+extension (it may be for instance a script). If no <code class="docutils literal notranslate"><span class="pre">file</span></code> is specified, a
+file named <code class="samp docutils literal notranslate"><em><span class="pre">extension</span></em><span class="pre">.sql</span></code> will be looked for in a few directories
+under the PostgreSQL <code class="docutils literal notranslate"><span class="pre">shared</span></code> directory and it will be loaded after an user
+confirmation.</p>
+<p>If the distribution provides more than one extension, the extensions are
+loaded in the order in which they are specified in the <code class="docutils literal notranslate"><span class="pre">provides</span></code> section of
+the <code class="docutils literal notranslate"><span class="pre">META.json</span></code> file. It is also possible to load only a few of the
+extensions provided, specifying them after <em>SPEC</em>: the extensions will be
+loaded in the order specified.</p>
+<p>If a <em>SCHEMA</em> is specified, the extensions are loaded in the provided schema.
+Note that if <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code> is used, the schema is directly supported;
+otherwise the <code class="docutils literal notranslate"><span class="pre">.sql</span></code> script loaded will be patched to create the objects in
+the provided schema (a confirmation will be asked before attempting loading).</p>
+</div>
+<div class="section" id="pgxn-unload">
+<span id="unload"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">unload</span></code><a class="headerlink" href="#pgxn-unload" title="Permalink to this headline">¶</a></h2>
+<p>Unload a distribution’s extensions from a database.</p>
+<p>Usage:</p>
+<pre class="pgxn-unload literal-block">
+pgxn unload [--help] [--stable | --testing | --unstable] [-d <em>DBNAME</em>]
+            [-h <em>HOST</em>] [-p <em>PORT</em>] [-U <em>NAME</em>] [--pg_config <em>PATH</em>]
+            [--schema <em>SCHEMA</em>]
+            <em>SPEC</em> [<em>EXT</em> [<em>EXT</em> ...]]
+</pre>
+<p>The command does the opposite of the <a class="reference internal" href="#load">load</a> command: it drops a distribution
+extensions from the specified database, either issuing <a class="reference external" href="https://www.postgresql.org/docs/current/sql-dropextension.html">DROP EXTENSION</a>
+commands or running uninstall scripts eventually provided.</p>
+<p>For every extension specified in the <a class="reference external" href="https://pgxn.org/spec/#provides">‘provides’ section</a> of the
+distribution <code class="docutils literal notranslate"><span class="pre">META.json</span></code>, the command will look for a file called
+<code class="samp docutils literal notranslate"><span class="pre">uninstall_</span><em><span class="pre">file.sql</span></em></code> where <code class="samp docutils literal notranslate"><em><span class="pre">file.sql</span></em></code> is the <code class="docutils literal notranslate"><span class="pre">file</span></code>
+specified. If no file is specified, <code class="samp docutils literal notranslate"><em><span class="pre">extension</span></em><span class="pre">.sql</span></code> is assumed. If
+a file with extension different from <code class="docutils literal notranslate"><span class="pre">.sql</span></code> is specified, it is
+assumed that the extension is not a PostgreSQL extension so unload is not
+performed.</p>
+<p>If a <em>SCHEMA</em> is specified, the uninstall script will be patched to drop the
+objects in the selected schema. However, if the extension was loaded via
+<code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span></code>, the server will be able to figure out the correct schema
+itself, so the option will be ignored.</p>
+<p>If the distribution specifies more than one extension, they are unloaded in
+reverse order respect to the order in which they are specified in the
+<code class="docutils literal notranslate"><span class="pre">META.json</span></code> file.  It is also possible to unload only a few of the
+extensions provided, specifying them after <em>SPEC</em>: the extensions will be
+unloaded in the order specified.</p>
+<p>See the <a class="reference internal" href="#load">load</a> command for details about the command arguments.</p>
+</div>
+<div class="section" id="pgxn-download">
+<span id="download"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">download</span></code><a class="headerlink" href="#pgxn-download" title="Permalink to this headline">¶</a></h2>
+<p>Download a distribution from the network.</p>
+<p>Usage:</p>
+<pre class="pgxn-download literal-block">
+pgxn download [--help] [--stable | --testing | --unstable]
+              [--target <em>PATH</em>]
+              <em>SPEC</em>
+</pre>
+<p>The distribution is specified according to the <a class="reference internal" href="#package-specification">package specification</a> and
+can be represented by an URL.  The file is saved in the current directory with
+name usually <code class="samp docutils literal notranslate"><em><span class="pre">distribution</span></em><span class="pre">-</span><em><span class="pre">version</span></em><span class="pre">.zip</span></code>. If a file with the same
+name exists, a suffix <code class="docutils literal notranslate"><span class="pre">-1</span></code>, <code class="docutils literal notranslate"><span class="pre">-2</span></code> etc. is added to the name, before the
+extension.  A different directory or name can be specified using the
+<code class="docutils literal notranslate"><span class="pre">--target</span></code> option.</p>
+</div>
+<div class="section" id="pgxn-search">
+<span id="id4"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">search</span></code><a class="headerlink" href="#pgxn-search" title="Permalink to this headline">¶</a></h2>
+<p>Search in the extensions available on PGXN.</p>
+<p>Usage:</p>
+<pre class="pgxn-search literal-block">
+pgxn search [--help] [--dist | --ext | --docs] <em>TERM</em> [<em>TERM</em> ...]
+</pre>
+<p>The command prints on <code class="docutils literal notranslate"><span class="pre">stdout</span></code> a list of packages and version matching
+<code class="samp docutils literal notranslate"><em><span class="pre">TERM</span></em></code>. By default the search is performed in the documentation:
+alternatively the distributions (using the <code class="docutils literal notranslate"><span class="pre">--dist</span></code> option) or the
+extensions (using the <code class="docutils literal notranslate"><span class="pre">--ext</span></code> option) can be searched.</p>
+<p>Example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pgxn search --dist integer
+<span class="go">tinyint 0.1.1</span>
+<span class="go">    Traditionally, PostgreSQL core has a policy not to have 1 byte *integer*</span>
+<span class="go">    in it. With this module, you can define 1 byte *integer* column on your</span>
+<span class="go">    tables, which will help query performances and...</span>
+
+<span class="go">check_updates 1.0.0</span>
+<span class="go">    ... test2 defined as: CREATE TABLE test2(a *INTEGER*, b *INTEGER*, c</span>
+<span class="go">    *INTEGER*, d *INTEGER*); To make a trigger allowing updates only when c</span>
+<span class="go">    becomes equal to 5: CREATE TRIGGER c_should_be_5 BEFORE UPDATE ON...</span>
+
+<span class="go">ssn 1.0.0</span>
+<span class="go">    INSERT INTO test VALUES(&#39;124659876&#39;); The output is always represented</span>
+<span class="go">    using the format with dashes, i.e: 123-45-6789 124-65-9876 Internals:</span>
+<span class="go">    The type is stored as a 4 bytes *integer*.</span>
+</pre></div>
+</div>
+<p>The search will return all the matches containing any of <em>TERM</em>. In order to
+search for items containing more than one word, join the word into a single
+token. For instance to search for items containing the terms “double
+precision” or the terms “floating point” use:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pgxn search <span class="s2">&quot;double precision&quot;</span> <span class="s2">&quot;floating point&quot;</span>
+<span class="go">semver 0.2.2</span>
+<span class="go">    ... to semver semver(12.0::real) 12.0.0semver(*double precision*) Cast</span>
+<span class="go">    *double precision* to semver semver(9.2::*double precision*)</span>
+<span class="go">    9.2.0semver(integer) Cast integer to semver semver(42::integer)...</span>
+
+<span class="go">saio 0.0.1</span>
+<span class="go">    Defaults to true. saio_seed A *floating point* seed for the random</span>
+<span class="go">    numbers generator. saio_equilibrium_factor Scaling factor for the query</span>
+<span class="go">    size, determining the number of loops before equilibrium is...</span>
+
+<span class="go">pgTAP 0.25.0</span>
+<span class="go">    ... ) casts_are( casts[] ) SELECT casts_are( ARRAY[ &#39;integer AS *double</span>
+<span class="go">    precision*&#39;, &#39;integer AS reltime&#39;, &#39;integer AS numeric&#39;, -- ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pgxn-info">
+<span id="info"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">info</span></code><a class="headerlink" href="#pgxn-info" title="Permalink to this headline">¶</a></h2>
+<p>Print information about a distribution obtained from PGXN.</p>
+<p>Usage:</p>
+<pre class="pgxn-info literal-block">
+pgxn info [--help] [--stable | --testing | --unstable]
+          [--details | --meta | --readme | --versions]
+          <em>SPEC</em>
+</pre>
+<p>The distribution is specified according to the <a class="reference internal" href="#package-specification">package specification</a>.  It
+cannot be a local dir or file nor an URL.  The command output is a list of
+values obtained by the distribution’s <code class="docutils literal notranslate"><span class="pre">META.json</span></code> file, for example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pgxn info pair
+<span class="go">name: pair</span>
+<span class="go">abstract: A key/value pair data type</span>
+<span class="go">description: This library contains a single PostgreSQL extension,</span>
+<span class="go">a key/value pair data type called “pair”, along with a convenience</span>
+<span class="go">function for constructing key/value pairs.</span>
+<span class="go">maintainer: David E. Wheeler &lt;david@j...y.com&gt;</span>
+<span class="go">license: postgresql</span>
+<span class="go">release_status: stable</span>
+<span class="go">version: 0.1.2</span>
+<span class="go">date: 2011-04-20T23:47:22Z</span>
+<span class="go">sha1: 9988d7adb056b11f8576db44cca30f88a08bd652</span>
+<span class="go">provides: pair: 0.1.2</span>
+</pre></div>
+</div>
+<p>Alternatively the raw <code class="docutils literal notranslate"><span class="pre">META.json</span></code> (using the <code class="docutils literal notranslate"><span class="pre">--meta</span></code> option) or the
+distribution README (using the <code class="docutils literal notranslate"><span class="pre">--readme</span></code> option) can be obtained.</p>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">--versions</span></code> option, the command prints a list of available
+versions for the specified distribution, together with their release status.
+Only distributions respecting <code class="samp docutils literal notranslate"><em><span class="pre">SPEC</span></em></code> and the eventually specified
+release status options are printed, for example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> pgxn info --versions <span class="s1">&#39;pair&lt;0.1.2&#39;</span>
+<span class="go">pair 0.1.1 stable</span>
+<span class="go">pair 0.1.0 stable</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pgxn-mirror">
+<span id="mirror"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">mirror</span></code><a class="headerlink" href="#pgxn-mirror" title="Permalink to this headline">¶</a></h2>
+<p>Return information about the available mirrors.</p>
+<p>Usage:</p>
+<pre class="pgxn-mirror literal-block">
+pgxn mirror [--help] [--detailed] [<em>URI</em>]
+</pre>
+<p>If no <code class="samp docutils literal notranslate"><span class="pre">URI</span></code> is specified, print a list of known mirror URIs. Otherwise
+print details about the specified mirror. It is also possible to print details
+for all the known mirrors using the <code class="docutils literal notranslate"><span class="pre">--detailed</span></code> option.</p>
+</div>
+<div class="section" id="pgxn-help">
+<span id="help"></span><h2><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">help</span></code><a class="headerlink" href="#pgxn-help" title="Permalink to this headline">¶</a></h2>
+<p>Display help and other program information.</p>
+<p>Usage:</p>
+<pre class="pgxn-help literal-block">
+pgxn help [--help] [--all | --libexec | <em>CMD</em>]
+</pre>
+<p>Without options show the same information obtained by <code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">--help</span></code>, which
+includes a list of builtin commands. With the <code class="docutils literal notranslate"><span class="pre">--all</span></code> option print the
+complete list of commands installed in the system.</p>
+<p>The option <code class="docutils literal notranslate"><span class="pre">--libexec</span></code> prints the full path of the directory containing
+the external commands scripts: see <a class="reference internal" href="ext.html#extending"><span class="std std-ref">Extending PGXN client</span></a> for more information.</p>
+<p><code class="samp docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">help</span> <em><span class="pre">CMD</span></em></code> is an alias for <code class="samp docutils literal notranslate"><span class="pre">pgxn</span> <em><span class="pre">CMD</span></em> <span class="pre">--help</span></code>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Program usage</a><ul>
+<li><a class="reference internal" href="#package-specification">Package specification</a></li>
+<li><a class="reference internal" href="#pgxn-install"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">install</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-check"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">check</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-uninstall"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">uninstall</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-load"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">load</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-unload"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">unload</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-download"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">download</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-search"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">search</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-info"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">info</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-mirror"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">mirror</span></code></a></li>
+<li><a class="reference internal" href="#pgxn-help"><code class="docutils literal notranslate"><span class="pre">pgxn</span> <span class="pre">help</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ext.html"
+                        title="next chapter">Extending PGXN client</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/usage.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ext.html" title="Extending PGXN client"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PGXN Client 1.3.dev0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2018, Daniele Varrazzo.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+    </div>
+  </body>
+</html>

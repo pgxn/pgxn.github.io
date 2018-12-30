@@ -1,0 +1,4 @@
+[submodule "sm/master"]
+	path = sm/master
+	url = https://github.com/pgxn/pgxnclient.git
+	branch = master
